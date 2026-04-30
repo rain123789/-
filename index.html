@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<title>扫雷小游戏</title>
+<style>
+body {
+    font-family: Arial;
+    text-align: center;
+    background: #f0f0f0;
+}
+#game {
+    display: inline-block;
+    margin-top: 20px;
+}
+.cell {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #999;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #ccc;
+    cursor: pointer;
+    font-weight: bold;
+}
+.row {
+    display: flex;
+}
+.revealed {
+    background: #eee;
+    cursor: default;
+}
+.mine {
+    background: red;
+}
+</style>
+</head>
+<body>
+<h2>扫雷小游戏</h2>
+<button onclick="init()">重新开始</button>
+<div id="game"></div>
+
+<script>
+const rows = 10;
+const cols = 10;
+const mineCount = 15;
+let board = [];
+
+function init() {
+    board = [];
+    const game = document.getElementById('game');
+    game.innerHTML = '';
+
+    // 初始化棋盘
+    for (let r = 0; r < rows; r++) {
+        let row = [];
+        for (let c = 0; c < cols; c++) {
+            row.push({
+                mine: false,
+                revealed: false,
+                count: 0,
+                element: null
+            });
+        }
+        board.push(row);
+    }
+
+    // 随机放雷
+    let placed = 0;
+    while (placed < mineCount) {
+        let r = Math.floor(Math.random() * rows);
+        let c = Math.floor(Math.random() * cols);
+        if (!board[r][c].mine) {
+            board[r][c].mine = true;
+            placed++;
+        }
+    }
+
+    // 计算数字
+    for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+            if (!board[r][c].mine) {
+                board[r][c].count = countMines(r, c);
+            }
+        }
+    }
+
+    // 渲染
+    for (let r = 0; r < rows; r++) {
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'row';
+        for (let c = 0; c < cols; c++) {
+            const cellDiv = document.createElement('div');
+            cellDiv.className = 'cell';
+            cellDiv.onclick = () => reveal(r, c);
+            board[r][c].element = cellDiv;
+            rowDiv.appendChild(cellDiv);
+        }
+        game.appendChild(rowDiv);
+    }
+}
+
+function countMines(r, c) {
+    let count = 0;
+    for (let dr = -1; dr <= 1; dr++) {
+        for (let dc = -1; dc <= 1; dc++) {
+            let nr = r + dr;
+            let nc = c + dc;
+            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
+                if (board[nr][nc].mine) count++;
+            }
+        }
+    }
+    return count;
+}
+
+function reveal(r, c) {
+    let cell = board[r][c];
+    if (cell.revealed) return;
+
+    cell.revealed = true;
+    const el = cell.element;
+    el.classList.add('revealed');
+
+    if (cell.mine) {
+        el.classList.add('mine');
+        el.innerText = '💣';
+        alert('游戏结束！');
+        init();
+        return;
+    }
+
+    if (cell.count > 0) {
+        el.innerText = cell.count;
+    } else {
+        for (let dr = -1; dr <= 1; dr++) {
+            for (let dc = -1; dc <= 1; dc++) {
+                let nr = r + dr;
+                let nc = c + dc;
+                if (nr >= 0 && nr < rows && nc >= 0 && nc < cols) {
+                    reveal(nr, nc);
+                }
+            }
+        }
+    }
+}
+
+init();
+</script>
+</body>
+</html>
+

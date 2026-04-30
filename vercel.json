@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "rewrites": [
+    { "source": "/", "destination": "/index.html" },
+    { "source": "/s", "destination": "/扫雷.html" },
+    { "source": "/mine", "destination": "/扫雷.html" },
+    { "source": "/:path*", "destination": "/index.html" }
+  ],
+  "cleanUrls": true
+}
+
