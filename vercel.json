@@ -4,8 +4,11 @@
     { "source": "/", "destination": "/index.html" },
     { "source": "/s", "destination": "/扫雷.html" },
     { "source": "/mine", "destination": "/扫雷.html" },
+    { "source": "/s", "destination": "/%E6%89%8B%E9%9B%B7.html" },
+    { "source": "/mine", "destination": "/%E6%89%8B%E9%9B%B7.html" },
+    { "source": "/s", "destination": "/saolei.html" },
+    { "source": "/mine", "destination": "/saolei.html" },
     { "source": "/:path*", "destination": "/index.html" }
   ],
   "cleanUrls": true
 }
-
